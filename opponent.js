@@ -1,9 +1,9 @@
-function Opponent() {
+function Opponent(roadWidth) {
     this.speed = floor(random(3, 7));
     this.w = 80;
     this.h = 144;
 
-    this.x = floor(random(0, width-this.w));
+    this.x = floor(random(0, roadWidth-this.w));
     if (this.speed < playerSpeed) {
         this.y = -this.h;
     } else {

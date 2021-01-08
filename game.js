@@ -5,7 +5,6 @@ var im_heart;
 var font;
 var playerSpeed = 7;
 var opponents = [];
-var roadMarkings = [];
 var score = 0;
 var lives = 5;
 var difficulty = 2;
@@ -20,36 +19,20 @@ function preload() {
 
 function setup() {
     createCanvas(400, 800);
-    //frameRate(50);
 
-    roadMarkings.push(new roadMarking());
     opponents.push(new Opponent());
     player = new Player();
+    road = new Road();
 }
 
 function draw() {
-    background(44, 44, 44);
-
-    // New road markings appear after certain number of frames
-    if (frameCount % 25 === 0) {
-        roadMarkings.push(new roadMarking());
-    }
-
-    // Show road markings
-    for (var i = roadMarkings.length-1 ; i >= 0 ; i--) {
-        roadMarkings[i].show();
-        roadMarkings[i].update();
-
-        // Remove road markings once the are off the screen
-        if (roadMarkings[i].offscreen()) {
-            roadMarkings.splice(i, 1);
-        }
-    }
+    background(100, 100, 100);
+    road.update();
 
     // New opponents appear after certain number of frames and up to a certain number
     if (frameCount % 130 === 0) {
         if (opponents.length <= difficulty) {
-            opponents.push(new Opponent());
+            opponents.push(new Opponent(road.getWidth()));
         }
     }
 
