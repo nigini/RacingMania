@@ -8,6 +8,7 @@ var opponents = [];
 var roadMarkings = [];
 var score = 0;
 var lives = 5;
+var difficulty = 2;
 
 function preload() {
     im_car_green = loadImage('assets/Car_Green.png');
@@ -18,7 +19,7 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(400, 600);
+    createCanvas(400, 800);
     //frameRate(50);
 
     roadMarkings.push(new roadMarking());
@@ -45,9 +46,11 @@ function draw() {
         }
     }
 
-    // New opponents appear after certain number of frames
+    // New opponents appear after certain number of frames and up to a certain number
     if (frameCount % 130 === 0) {
-        opponents.push(new Opponent());
+        if (opponents.length <= difficulty) {
+            opponents.push(new Opponent());
+        }
     }
 
     // Show opponents
@@ -84,6 +87,18 @@ function draw() {
     }
     if (keyIsDown(RIGHT_ARROW)) {
         player.turnRight();
+    }
+    if (keyIsDown(UP_ARROW)) {
+        if (frameCount % 20 === 0) {
+            playerSpeed++;
+            console.log('SPEED UP: ' + playerSpeed);
+        }
+    }
+    if (keyIsDown(DOWN_ARROW)) {
+        if (frameCount % 20 === 0) {
+            playerSpeed--;
+            console.log('SPEED DOWN: ' + playerSpeed);
+        }
     }
 
     // Show player stats

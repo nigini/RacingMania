@@ -1,10 +1,14 @@
 function Opponent() {
+    this.speed = floor(random(3, 7));
     this.w = 80;
     this.h = 144;
 
     this.x = floor(random(0, width-this.w));
-    this.y = -this.h;
-    this.speed = playerSpeed-1;
+    if (this.speed < playerSpeed) {
+        this.y = -this.h;
+    } else {
+        this.y = height;
+    }
 
     this.isOvertakenBy = false;
 
@@ -13,11 +17,15 @@ function Opponent() {
     }
 
     this.update = function() {
-        this.y += this.speed;
+        if (this.speed < playerSpeed) {
+            this.y += this.speed;
+        } else {
+            this.y -= this.speed;
+        }
     }
 
     this.offscreen = function() {
-        return (this.y > height);
+        return (this.y > height || this.y < -this.h);
     }
 
     this.overtakenBy = function(player) {

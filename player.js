@@ -3,7 +3,7 @@ function Player() {
     this.h = 144;
 
     this.x = floor(width/2 - this.w/2);
-    this.y = floor((3 * height/4) - this.h/2);
+    this.y = floor(height/2);
 
     this.show = function() {
         image(im_car_red, this.x, this.y);
