@@ -30,9 +30,16 @@ function draw() {
     parking.draw();
 
     // New opponents appear after certain number of frames and up to a certain number
-    if (frameCount % 150 === 0) {
+    if (frameCount % 100 === 0) {
+        let lane = Math.floor((Math.random()*100)/33);
+        let posX = Math.floor(width/3*lane);
         if (opponents.length <= difficulty) {
-            opponents.push(new Opponent(road.getWidth()));
+            let speed = (Math.floor(Math.random()*10)<2) ? playerSpeed+2 : playerSpeed-2;
+            if(lane==2) {
+                speed = playerSpeed-1;
+            }
+            opponents.push(new Opponent(posX, speed));
+            console.log(`NEW CAR on lane: ${lane} and with speed: ${speed}`);
         }
     }
     // New pickup appear after certain random number of frames
@@ -41,30 +48,7 @@ function draw() {
         parking.addPickup();
     }
 
-    // Show opponents
-    for (var i = opponents.length-1 ; i >= 0 ; i--) {
-        opponents[i].show();
-        opponents[i].update();
-
-        if (opponents[i].overtakenBy(player) && opponents[i].isOvertakenBy === false) {
-            score += 5;
-            opponents[i].isOvertakenBy = true;
-        }
-
-        // If opponents collide with the player, they get destroyed
-        if (opponents[i].hits(player)) {
-            opponents[i].boom();
-            opponents.splice(i, 1);
-
-            // Penalty for collision is -10, and you loose one life
-            score = (score >= 10)?(score-10):0;
-            lives--;
-        }
-        // Remove opponents once the are off the screen
-        else if (opponents[i].offscreen()) {
-            opponents.splice(i, 1);
-        }
-    }
+    opponents.forEach(updateOpponent);
 
     // Show the player
     player.show();
@@ -116,5 +100,29 @@ function draw() {
 function processPickup(pickup) {
     if(pickup.type === 'heart' && lives<5) {
         lives++;
+    }
+}
+
+function updateOpponent(car, index) {
+    car.show();
+    car.update();
+
+    if (car.wasOvertaken() && !car.overtakenFlag) {
+        score += 5;
+        car.overtakenFlag = true;
+    }
+
+    // If opponents collide with the player, they get destroyed
+    if (car.hits(player)) {
+        car.boom();
+        opponents.splice(index, 1);
+
+        // Penalty for collision is -10, and you loose one life
+        score = (score >= 10)?(score-10):0;
+        lives--;
+    }
+    // Remove opponents once the are off the screen
+    else if (car.offscreen()) {
+        opponents.splice(index, 1);
     }
 }
