@@ -1,13 +1,10 @@
-var im_car_green;
-var im_car_red;
-var im_boom;
-var im_heart;
-var font;
-var playerSpeed = 7;
-var opponents = [];
-var score = 0;
-var lives = 5;
-var difficulty = 2;
+let im_car_green, im_car_red, im_boom, im_heart, font;
+let playerSpeed = 7;
+let opponents = [];
+let score = 0;
+let lives = 5;
+let difficulty = 3;
+let player, road, parking;
 
 function preload() {
     im_car_green = loadImage('assets/Car_Green.png');
@@ -18,22 +15,30 @@ function preload() {
 }
 
 function setup() {
+    // collideDebug(true);
     createCanvas(400, 800);
-
+    let laneWidth = width/3;
     opponents.push(new Opponent());
     player = new Player();
-    road = new Road();
+    road = new Road(0,0,2*laneWidth, height);
+    parking = new Parking(2*laneWidth, 0, laneWidth, height);
+    parking.addPickupListener(processPickup);
 }
 
 function draw() {
-    background(100, 100, 100);
-    road.update();
+    road.draw();
+    parking.draw();
 
     // New opponents appear after certain number of frames and up to a certain number
-    if (frameCount % 130 === 0) {
+    if (frameCount % 150 === 0) {
         if (opponents.length <= difficulty) {
             opponents.push(new Opponent(road.getWidth()));
         }
+    }
+    // New pickup appear after certain random number of frames
+    //let pickup = Math.floor(Math.random()*100);
+    if (frameCount % 300  === 0) {
+        parking.addPickup();
     }
 
     // Show opponents
@@ -105,5 +110,11 @@ function draw() {
         textAlign(CENTER);
         fill(255);
         text('GAME OVER', width/2, height/2);
+    }
+}
+
+function processPickup(pickup) {
+    if(pickup.type === 'heart' && lives<5) {
+        lives++;
     }
 }
